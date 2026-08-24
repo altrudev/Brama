@@ -39,6 +39,8 @@ PROHIBITED_CONTENT_KEYS = {
     "resource_url",
 }
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
+REVIEW_STATES = {"RECEIVED", "QUARANTINED", "HUMAN_REVIEW_PENDING", "VERIFIED", "REJECTED", "INSUFFICIENT_EVIDENCE", "AUTHORIZED_FOR_ACTION", "ACTION_ACTIVE", "OUTCOME_OBSERVED", "CLOSED"}
+PROVENANCE_STATUSES = {"UNAVAILABLE", "UNVERIFIED", "VALID", "INVALID"}
 
 
 class BoundaryRejected(ValueError):
@@ -73,6 +75,14 @@ def validate_sanitized_event(event: dict) -> None:
         raise BoundaryRejected("valid evidence_set_root required when provided")
     if event.get("policy_sha256") is not None and not SHA256.fullmatch(str(event["policy_sha256"])):
         raise BoundaryRejected("valid policy_sha256 required when provided")
+    if event["review_state"] not in REVIEW_STATES:
+        raise BoundaryRejected("unsupported review_state")
+    if event.get("provenance_status") is not None and event["provenance_status"] not in PROVENANCE_STATUSES:
+        raise BoundaryRejected("unsupported provenance_status")
+    for key in ("source_type", "authority_id", "decision", "outcome", "policy_version"):
+        value = event.get(key)
+        if value is not None and (not isinstance(value, str) or not value):
+            raise BoundaryRejected(f"{key} must be non-empty text when provided")
     _confidence(event, "finding_confidence")
     _confidence(event, "attribution_confidence")
     try:
