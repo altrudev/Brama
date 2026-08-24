@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://altru.dev/schemas/brama-assurance/sanitized-event.schema.json",
-  "title": "BRAMA Assurance Sanitized Event",
+  "$id": "https://altru.dev/schema/brama-proofline/sanitized-event-v2.json",
+  "title": "BRAMA Proofline Sanitized Event v2",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -14,8 +14,10 @@
   "properties": {
     "submission_id": {"type": "string", "minLength": 1, "maxLength": 200},
     "platform": {"type": "string", "minLength": 1, "maxLength": 100},
+    "source_type": {"type": ["string", "null"], "minLength": 1, "maxLength": 100},
     "observed_at": {"type": "string", "format": "date-time"},
     "evidence_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "evidence_set_root": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
     "review_state": {
       "enum": [
         "RECEIVED",
@@ -30,8 +32,13 @@
         "CLOSED"
       ]
     },
-    "authority_id": {"type": ["string", "null"], "maxLength": 200},
-    "decision": {"type": ["string", "null"], "maxLength": 200},
-    "outcome": {"type": ["string", "null"], "maxLength": 200}
+    "authority_id": {"type": ["string", "null"], "minLength": 1, "maxLength": 200},
+    "decision": {"type": ["string", "null"], "minLength": 1, "maxLength": 200},
+    "outcome": {"type": ["string", "null"], "minLength": 1, "maxLength": 200},
+    "finding_confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "attribution_confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "policy_version": {"type": ["string", "null"], "minLength": 1, "maxLength": 100},
+    "policy_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "provenance_status": {"type": ["string", "null"], "enum": [null, "UNAVAILABLE", "UNVERIFIED", "VALID", "INVALID"]}
   }
 }
