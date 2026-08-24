@@ -190,6 +190,22 @@ class ProoflineTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             verify_bundle(bundle)
 
+    def test_proof_bundle_rejects_attestation_tampering(self):
+        capsule = self.capsule()
+        attestation = ReviewAttestation(case_id="BR-20481", reviewer_id="r1", reviewer_group="g1", evidence_sha256=DIGEST, decision=ReviewDecision.VERIFIED, confidence=0.8, occurred_at="2026-08-24T04:10:00Z")
+        bundle = build_proof_bundle(capsule, self.authorized_ledger(), reviewer_attestations=[attestation])
+        bundle["reviewer_attestations"][0]["confidence"] = 0.1
+        report = verify_bundle(bundle)
+        self.assertFalse(report.integrity_verified)
+        self.assertTrue(any("attestation hash mismatch" in item for item in report.failures))
+
+    def test_proof_bundle_filters_unrelated_cases(self):
+        capsule = self.capsule()
+        entries = self.authorized_ledger()
+        append_transition(entries, case_id="OTHER", from_state=State.RECEIVED, to_state=State.QUARANTINED, actor_id="s", actor_type="system", occurred_at="2026-08-24T04:06:00Z", evidence_sha256=DIGEST)
+        bundle = build_proof_bundle(capsule, entries)
+        self.assertTrue(all(item["case_id"] == capsule.case_id for item in bundle["ledger"]))
+
 
 if __name__ == "__main__":
     unittest.main()
