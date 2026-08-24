@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 import re
 import sys
 
@@ -17,6 +18,7 @@ LOCALE_MARKERS = [
 # Files that contain policy code for detecting prohibited locale markers are excluded
 # from the literal marker scan; they remain subject to Russian-specific character scan.
 POLICY_CODE = {Path("src/brama_assurance/audit.py"), Path("src/brama_assurance/monitor.py")}
+PROHIBITED_SCHEMA_FIELDS = {"content", "raw_content", "text", "body", "payload", "message", "transcript", "media", "attachment", "prompt", "instruction", "instructions", "directive", "url", "uri", "resource_url"}
 
 
 def audit(root: Path) -> list[str]:
@@ -33,8 +35,16 @@ def audit(root: Path) -> list[str]:
                 if marker.search(text):
                     failures.append(f"Russian locale marker found: {rel}")
                     break
-        if rel.name == "sanitized-event.schema.json" and ("raw_" + "content" in text or '"content"' in text):
-            failures.append(f"Potential raw-content field found: {rel}")
+        if rel.parts and rel.parts[0] == "schema" and rel.suffix.lower() == ".json":
+            try:
+                schema = json.loads(text)
+            except json.JSONDecodeError:
+                failures.append(f"Invalid JSON schema: {rel}")
+            else:
+                fields = set(schema.get("properties", {}))
+                prohibited_fields = fields & PROHIBITED_SCHEMA_FIELDS
+                if prohibited_fields:
+                    failures.append(f"Prohibited clean-boundary schema field found: {rel}:{sorted(prohibited_fields)[0]}")
     return failures
 
 
