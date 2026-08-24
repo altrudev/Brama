@@ -14,17 +14,78 @@
     "provenance_status"
   ],
   "properties": {
-    "case_id": {"type": "string", "minLength": 1},
-    "evidence_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
-    "observed_at": {"type": "string", "format": "date-time"},
-    "platform": {"type": "string", "minLength": 1},
-    "source_type": {"type": "string", "minLength": 1},
-    "review_state": {"type": "string"},
-    "finding_confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
-    "attribution_confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
-    "authority_id": {"type": ["string", "null"]},
-    "policy_version": {"type": ["string", "null"]},
-    "policy_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
-    "provenance_status": {"enum": ["UNAVAILABLE", "UNVERIFIED", "VALID", "INVALID"]}
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "evidence_set_root": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "platform": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "review_state": {
+      "type": "string"
+    },
+    "finding_confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "attribution_confidence": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "authority_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "policy_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "policy_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "provenance_status": {
+      "enum": [
+        "UNAVAILABLE",
+        "UNVERIFIED",
+        "VALID",
+        "INVALID"
+      ]
+    }
   }
 }
