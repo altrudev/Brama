@@ -1,37 +1,49 @@
 # BRAMA Assurance Boundary
 
-A clean-boundary integrity and transition-assurance prototype for Ukraine's BRAMA / Cyber Brama public service surface.
+External integrity and transition-assurance tooling for Ukraine's **Кібер Брама / Cyber Brama** public infrastructure.
 
-This project is deliberately **not** a propaganda collector, classifier, reporting bot or hostile-content archive. It is designed to help verify BRAMA's own public-facing integrity while preserving a strict separation between a clean Ukrainian/English assurance environment and hostile material that BRAMA may need to process operationally.
+This project is deliberately **not** a propaganda corpus, classifier, scraping pipeline, or mass-reporting tool. It is a clean-side assurance layer that evaluates the public Ukrainian/English service surface and models governed transitions without ingesting or retaining hostile content.
 
-## Purpose
+## Why this exists
 
-BRAMA's mission requires contact with hostile and manipulative information. That makes direct corpus integration inappropriate for systems with a zero-Russian operating-corpus rule. The assurance boundary therefore works on public service state, metadata, provenance and sanitized transition events rather than importing hostile text.
+BRAMA's mission necessarily brings it into contact with hostile information. That makes direct corpus integration inappropriate for systems that require a clean Ukrainian-only operating corpus. The safer contribution pattern is an explicit trust boundary:
 
-The core distinction is:
+```text
+CLEAN ASSURANCE DOMAIN
+        |
+        | metadata / hashes / state only
+        v
++--------------------------+
+| BRAMA Assurance Boundary |
++--------------------------+
+        |
+======== TRUST BOUNDARY ========
+        |
+        v
+HOSTILE / UNTRUSTED EVIDENCE DOMAIN
+```
 
-> detection != evidence != attribution != authority != permission to act
+The clean side may receive identifiers, timestamps, hashes, platform classes, review states, approval records and outcome states. It does **not** receive raw hostile payloads.
 
-Automated observations may create a reviewable finding. They do not create authority to report, block, accuse, classify or otherwise act against a person, account or resource.
+## Prototype capabilities
 
-## Components
+`brama-monitor` performs read-only checks against an explicit host allowlist and emits findings without retaining response bodies.
 
-### Public Integrity Monitor
+Current checks:
 
-Read-only checks against an explicit HTTPS allowlist for BRAMA's own public pages. Current checks include:
+- canonical HTTPS host enforcement;
+- UA/EN public-locale surface check;
+- unexpected Russian-locale exposure detection;
+- public testing-mode banner detection;
+- UA/EN freshness drift detection;
+- mixed-language signal detection on the English route;
+- privacy-policy canonical-domain drift detection;
+- privacy-policy MAC-address collection declaration detection;
+- page SHA-256 evidence digests for reproducibility.
 
-- UA/EN locale integrity;
-- freshness and translation drift;
-- canonical-domain drift;
-- privacy-policy consistency indicators;
-- testing-state exposure;
-- response provenance and SHA-256 evidence digests.
+## DDC transition model
 
-Raw page bodies are processed transiently and are not retained by the monitor.
-
-### Governed Transition Model
-
-The governance module models a constrained workflow:
+The project treats detection, evidence, attribution, authority and action as separate states.
 
 ```text
 RECEIVED
@@ -40,32 +52,39 @@ RECEIVED
   -> VERIFIED | REJECTED | INSUFFICIENT_EVIDENCE
   -> AUTHORIZED_FOR_ACTION
   -> ACTION_ACTIVE
-  -> EXTERNAL_ACTION_OBSERVED
+  -> OUTCOME_OBSERVED
   -> CLOSED
 ```
 
-`AUTHORIZED_FOR_ACTION` requires an explicit human approval record. Automated detector output cannot jump directly into an action-authorized state.
+No detector output can directly authorize coordinated action.
 
-### Sanitized Event Boundary
+## Containment invariants
 
-The event sanitizer rejects content-bearing fields before metadata can cross from a hostile-analysis environment into a clean assurance environment.
+Raw hostile material is classified as:
 
-Allowed examples include:
+```text
+trust: untrusted_external_evidence
+executability: none
+directive_authority: none
+training_eligibility: denied
+memory_promotion: denied
+clean_corpus_export: denied
+```
 
-- submission identifier;
-- platform class;
-- timestamps;
-- evidence digest;
-- source class;
-- moderator state;
-- decision;
-- approval identifier;
-- transition history;
-- report status.
+The implementation is intentionally small and auditable. Network access is GET-only, allowlisted, bounded by response-size and timeout limits, and emits no telemetry.
 
-Raw message bodies, transcripts, post text, prompts and equivalent content fields are not allowed through the boundary.
+## Run
 
-### Clean-Corpus Audit
+```bash
+python -m brama_assurance.cli --live
+```
+
+For local development:
+
+```bash
+PYTHONPATH=src python -m unittest discover -s tests -v
+PYTHONPATH=src python -m brama_assurance.audit
+```
 
 The audit checks repository invariants, including absence of Russian-language locale surfaces and Russian-specific Cyrillic characters in project text.
 
