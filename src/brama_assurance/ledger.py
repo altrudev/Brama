@@ -168,7 +168,7 @@ def verify_chain(entries: Iterable[LedgerEntry]) -> list[str]:
                 failures.append(f"authority_id missing at {expected_sequence}")
             if not entry.policy_version:
                 failures.append(f"policy_version missing at {expected_sequence}")
-            if not entry.policy_sha256 or len(entry.policy_sha256) != 64:
+            if not entry.policy_sha256 or len(entry.policy_sha256) != 64 or any(c not in "0123456789abcdef" for c in entry.policy_sha256):
                 failures.append(f"policy_sha256 missing or invalid at {expected_sequence}")
         current_by_case[entry.case_id] = entry.to_state
         previous_hash = entry.entry_hash
