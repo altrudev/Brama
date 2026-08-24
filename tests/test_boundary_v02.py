@@ -1,6 +1,8 @@
+import json
+from pathlib import Path
 import unittest
 
-from brama_assurance.sanitizer import BoundaryRejected, validate_sanitized_event
+from brama_assurance.sanitizer import ALLOWED_KEYS, BoundaryRejected, validate_sanitized_event
 
 
 DIGEST = "d" * 64
@@ -38,6 +40,17 @@ class BoundaryV02Tests(unittest.TestCase):
             "provenance_status": "UNVERIFIED",
         })
         validate_sanitized_event(event)
+
+    def test_schema_matches_runtime_allowlist(self):
+        root = Path(__file__).resolve().parents[1]
+        schema = json.loads((root / "schema" / "sanitized-event.schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(set(schema["properties"]), ALLOWED_KEYS)
+
+    def test_invalid_review_state_is_denied(self):
+        event = self.base()
+        event["review_state"] = "UNSUPPORTED"
+        with self.assertRaises(BoundaryRejected):
+            validate_sanitized_event(event)
 
 
 if __name__ == "__main__":
