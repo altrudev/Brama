@@ -38,6 +38,7 @@ class EvidenceCapsule:
     authority_id: str | None = None
     policy_version: str | None = None
     policy_sha256: str | None = None
+    evidence_set_root: str | None = None
     provenance_status: str = "UNAVAILABLE"
 
     def validate(self) -> None:
@@ -55,6 +56,8 @@ class EvidenceCapsule:
             raise EvidenceCapsuleRejected("unsupported review_state")
         if self.policy_sha256 is not None and not SHA256.fullmatch(self.policy_sha256):
             raise EvidenceCapsuleRejected("valid policy_sha256 required when provided")
+        if self.evidence_set_root is not None and not SHA256.fullmatch(self.evidence_set_root):
+            raise EvidenceCapsuleRejected("valid evidence_set_root required when provided")
         if self.provenance_status not in {"UNAVAILABLE", "UNVERIFIED", "VALID", "INVALID"}:
             raise EvidenceCapsuleRejected("unsupported provenance_status")
         for field_name in ("finding_confidence", "attribution_confidence"):
