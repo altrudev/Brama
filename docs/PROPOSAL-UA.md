@@ -166,7 +166,7 @@ Proofline побудовано так, щоб чисте середовище н
 
 ## Автор
 
-**Valentyn Rukhaylo**  
+**Валентин Рухайло**  
 Altru.dev  
 Email: altrudevelop@gmail.com  
 Contact: https://altru.dev/contact  
