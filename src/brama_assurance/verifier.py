@@ -35,6 +35,10 @@ def verify_proof(
         failures.append("capsule hash mismatch")
 
     items = list(entries)
+    if any(entry.case_id != capsule.case_id for entry in items):
+        failures.append("ledger contains entries outside capsule case")
+    if any(entry.evidence_sha256 != capsule.evidence_sha256 for entry in items):
+        failures.append("ledger evidence digest differs from capsule evidence digest")
     chain_failures = verify_chain(items)
     failures.extend(chain_failures)
 
