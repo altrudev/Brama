@@ -19,7 +19,7 @@ DEFAULT_URLS = (
 )
 MAX_BYTES = 2_000_000
 TIMEOUT_SECONDS = 10
-UA = "BRAMA-Assurance-Boundary/0.1 (+https://altru.dev/contact)"
+UA = "BRAMA-Proofline/0.2 (+https://altru.dev/contact)"
 
 
 class NoRedirect(HTTPRedirectHandler):
@@ -240,8 +240,8 @@ def run_live(urls: Iterable[str] = DEFAULT_URLS) -> tuple[list[PageEvidence], li
 
 def serialize(evidence: list[PageEvidence], findings: list[Finding], errors: list[dict]) -> dict:
     return {
-        "project": "BRAMA Assurance Boundary",
-        "version": "0.1.0",
+        "project": "BRAMA Proofline",
+        "version": "0.2.0",
         "evidence": [asdict(item) for item in evidence],
         "findings": [asdict(item) for item in findings],
         "errors": errors,
