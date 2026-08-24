@@ -6,7 +6,7 @@ from .monitor import run_live, serialize
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="BRAMA public integrity monitor")
+    parser = argparse.ArgumentParser(description="BRAMA Proofline public integrity monitor")
     parser.add_argument("--live", action="store_true", help="perform bounded public checks")
     args = parser.parse_args()
     if not args.live:
