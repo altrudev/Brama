@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "brama-assurance-boundary"
+version = "0.1.0"
+description = "Clean-boundary public integrity and governed transition assurance for BRAMA"
+requires-python = ">=3.11"
+authors = [{name = "Valentyn Rukhaylo"}]
+
+[project.scripts]
+brama-assurance = "brama_assurance.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
