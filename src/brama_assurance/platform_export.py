@@ -47,6 +47,7 @@ def build_platform_review_package(
         "resource_type": capsule.source_type,
         "observed_at": capsule.observed_at,
         "evidence_sha256": capsule.evidence_sha256,
+        "evidence_set_root": capsule.evidence_set_root,
         "capsule_sha256": capsule.capsule_hash(),
         "provenance_status": capsule.provenance_status,
         "review_state": latest.to_state,
