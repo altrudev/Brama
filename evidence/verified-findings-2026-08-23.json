@@ -1,0 +1,31 @@
+{
+  "observed_date": "2026-08-23",
+  "method": "public web verification; no hostile-content ingestion",
+  "findings": [
+    {
+      "id": "PUBLIC_TESTING_MODE",
+      "source": "https://stopfraud.gov.ua/",
+      "observation": "Public portal declares testing/filling mode."
+    },
+    {
+      "id": "UA_EN_FRESHNESS_DRIFT",
+      "source": "https://stopfraud.gov.ua/en",
+      "observation": "English route exposes February 2024 dated news while the Ukrainian homepage exposes August 2026 dated news."
+    },
+    {
+      "id": "EN_MIXED_LANGUAGE_SIGNAL",
+      "source": "https://stopfraud.gov.ua/en",
+      "observation": "English route exposes Ukrainian-language news headlines."
+    },
+    {
+      "id": "PRIVACY_CANONICAL_DOMAIN_DRIFT",
+      "source": "https://stopfraud.gov.ua/privacy-policy",
+      "observation": "Privacy-policy text identifies the legacy stopfraud.com.ua domain while served from stopfraud.gov.ua."
+    },
+    {
+      "id": "PRIVACY_MAC_COLLECTION_DECLARATION",
+      "source": "https://stopfraud.gov.ua/privacy-policy",
+      "observation": "Privacy-policy text declares automatic MAC-address collection; implementation/policy consistency should be verified."
+    }
+  ]
+}
