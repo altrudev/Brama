@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://altru.dev/schema/brama-proofline/evidence-capsule-v1.json",
+  "title": "BRAMA Proofline Evidence Capsule v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "evidence_sha256",
+    "observed_at",
+    "platform",
+    "source_type",
+    "review_state",
+    "provenance_status"
+  ],
+  "properties": {
+    "case_id": {"type": "string", "minLength": 1},
+    "evidence_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "platform": {"type": "string", "minLength": 1},
+    "source_type": {"type": "string", "minLength": 1},
+    "review_state": {"type": "string"},
+    "finding_confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "attribution_confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "authority_id": {"type": ["string", "null"]},
+    "policy_version": {"type": ["string", "null"]},
+    "policy_sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "provenance_status": {"enum": ["UNAVAILABLE", "UNVERIFIED", "VALID", "INVALID"]}
+  }
+}
